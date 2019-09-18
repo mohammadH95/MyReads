@@ -2,17 +2,17 @@ import React from 'react'
 import './App.css'
 import * as BooksAPI from './BooksAPI'
 import Search from "./Search"
-import  { Route }  from 'react-router-dom'
+import  { Switch, Route }  from 'react-router-dom'
 import ListBooks from './ListBooks'
 
 class BooksApp extends React.Component {
   state = {
     books:[],
   }
-
-
-  componentDidMount(){
-    this.getBooks()
+ 
+  async componentDidMount() {
+    const books = await BooksAPI.getAll()
+    this.setState({ books })
   }
 
   shelfChanger = (book, shelf) => {
@@ -25,7 +25,8 @@ class BooksApp extends React.Component {
     BooksAPI.getAll()
     .then(books => {
       this.setState({
-        books
+        books,
+        change: false
       })
     })
     
@@ -34,15 +35,24 @@ class BooksApp extends React.Component {
   render() {
     return (
       <div className="app">
-        <Route path='/search' render={() => (
+        <Switch>
+          <Route path='/search' render={() => (
           <Search shelfChanger={this.shelfChanger} books={this.state.books} />
-          )}
-        />
+            )}
+          />
+          <Route exact path='/' render={() => (
+            <ListBooks books={this.state.books} shelfChanger={this.shelfChanger} />
+            )}
+          />
 
-        <Route exact path='/' render={() => (
-          <ListBooks books={this.state.books} shelfChanger={this.shelfChanger} />
-        )}
-        />
+          <Route render = {
+            () => <div>
+              <h1>404</h1>
+                  <h3>page not found</h3>
+            </div>
+          }/>
+        </Switch>
+        
       </div>
     )
   }

@@ -44,7 +44,9 @@ class Search extends Component {
             className="close-search"
             >Close</Link>
           <div className="search-books-input-wrapper">
+            {/*suggestion udacity: since the search page has only one input box, consider adding a autoFocus attribute to it */}
             <input 
+              autoFocus
               type="query" 
               placeholder="Search by title or author"
               value={this.state.query}
